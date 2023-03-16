@@ -1,16 +1,29 @@
-# This is a sample Python script.
+"""
+PLAN:
+Check the first word of the statement. Then use a match statement to match the first token.
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+Then for each of the first token in the statement have a function, which then checks the rest
+of the token to see if that’s valid. If a token is not valid an exception will be thrown with a relevant message
+
+Each of the tokens will have their own functions to check validity, including identifiers, constant literal and
+correct operators such as plus and end.
+
+Each of the first tokens well then have a do method in an interpreter to simulate what needs to be done.
+"""
+
+from parser import Parser
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def begin_parser():
+    print(
+        "----------------------------------------- \n" +
+        "159.341 2023 Semester 1, Assignment 1\n" +
+        "Submitted by Lydia Price, 20004521\n" +
+        "----------------------------------------- \n"
+    )
+
+    Parser().begin()
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    begin_parser()
