@@ -11,7 +11,7 @@ correct operators such as plus and end.
 Each of the first tokens well then have a do method in an interpreter to simulate what needs to be done.
 """
 
-from parser import Parser
+from LexerNoClass import Parser
 
 
 def begin_parser():
