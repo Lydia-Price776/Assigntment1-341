@@ -45,8 +45,3 @@ class Lexer:
         t.lexer.skip(1)
 
 
-lexer = Lexer().lexer
-lexer.input('SPACE NEWLINE TAB YEET')
-
-for token in lexer:
-    print(token)

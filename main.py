@@ -11,7 +11,7 @@ correct operators such as plus and end.
 Each of the first tokens well then have a do method in an interpreter to simulate what needs to be done.
 """
 
-from LexerNoClass import Parser
+from LexerClass import Lexer
 
 
 def begin_parser():
@@ -22,7 +22,11 @@ def begin_parser():
         "----------------------------------------- \n"
     )
 
-    Parser().begin()
+    lexer = Lexer().lexer
+    lexer.input('SPACE NEWLINE TAB YEET')
+
+    for token in lexer:
+        print(token)
 
 
 if __name__ == '__main__':
