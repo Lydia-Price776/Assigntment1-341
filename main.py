@@ -21,12 +21,13 @@ def begin_parser():
         "Submitted by Lydia Price, 20004521\n" +
         "----------------------------------------- \n"
     )
-
     lexer = Lexer().lexer
-    lexer.input('SPACE NEWLINE TAB YEET')
-
-    for token in lexer:
-        print(token)
+    usr_input = input()
+    while True:
+        lexer.input(usr_input)
+        for token in lexer:
+            print(token)
+        usr_input = input()
 
 
 if __name__ == '__main__':
