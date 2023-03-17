@@ -1,5 +1,6 @@
 from ply import lex
 
+
 class Lexer:
     def __init__(self):
         self.lexer = lex.lex(module=self)
@@ -30,7 +31,7 @@ class Lexer:
     tokens = tokens + list(reserved.values())
 
     t_plus = r'\+'
-    t_literal = r'["][a-zA-Z0-9 \W]*["]' #TODO may not handle /"?
+    t_literal = r'["][a-zA-Z0-9 \W]*["]'  # TODO may not handle /"?
     t_end = r';'
     t_ignore_space = r'[ ]'
     t_id = r'[a-zA-Z][a-zA-Z0-9]*'
@@ -42,6 +43,8 @@ class Lexer:
     def t_error(self, t):
         raise IllegalCharacter(f"Illegal character {t.value[0]!r} in statement")
 
+    def get_tokens(self):
+        return self.tokens
 
 class IllegalCharacter(Exception):
     pass

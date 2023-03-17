@@ -11,10 +11,12 @@ correct operators such as plus and end.
 Each of the first tokens well then have a do method in an interpreter to simulate what needs to be done.
 """
 
-from LexerClass import Lexer
+from lexer import Lexer
+from parser import Parser
+from ply import yacc
 
 
-def begin_parser():
+def begin():
     print(
         "----------------------------------------- \n" +
         "159.341 2023 Semester 1, Assignment 1\n" +
@@ -22,13 +24,18 @@ def begin_parser():
         "----------------------------------------- \n"
     )
     lexer = Lexer().lexer
+    parser = Parser()
+
     usr_input = input()
     while True:
         lexer.input(usr_input)
+
         for token in lexer:
             print(token)
+            parser.parser(token)
+        # Token Attributes type, value, lineno, lexpos
         usr_input = input()
 
 
 if __name__ == '__main__':
-    begin_parser()
+    begin()
