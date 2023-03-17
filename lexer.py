@@ -34,10 +34,14 @@ class Lexer:
     t_literal = r'["][a-zA-Z0-9 \W]*["]'  # TODO may not handle /"?
     t_end = r';'
     t_ignore_space = r'[ ]'
-    t_id = r'[a-zA-Z][a-zA-Z0-9]*'
 
     def t_constant(self, t):
         r'SPACE|TAB|NEWLINE'
+        return t
+
+    def t_id(self, t):
+        r'[a-zA-Z][a-zA-Z0-9]*'
+        t.type = self.reserved.get(t.value, 'id')
         return t
 
     def t_error(self, t):
@@ -45,6 +49,7 @@ class Lexer:
 
     def get_tokens(self):
         return self.tokens
+
 
 class IllegalCharacter(Exception):
     pass
