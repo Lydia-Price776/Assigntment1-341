@@ -6,7 +6,7 @@ class Parser:
     tokens = Lexer.tokens
 
     def __init__(self):
-        self.parser = yacc.yacc(module=self)
+        self.parser = yacc.yacc(module=self, tabmodule=None, debug=True, write_tables=False,)
         self.lexer = Lexer().lexer
 
     def parse(self, input_string):

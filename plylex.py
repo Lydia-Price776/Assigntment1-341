@@ -1,53 +1,28 @@
 from ply import lex
 
-tokens = [
-    "constant",
-    "id",
-    "literal",
-    "plus",
-    "end",
-    "space",
-    "newline",
-    "tab"
-]
 
-reserved = {
-    'append': 'append',
-    'exit': 'exit',
-    'list': 'list',
-    'print': 'print',
-    'printlength': 'printlength',
-    'printwords': 'printwords',
-    'printwordcount': 'printwordcount',
-    'reverse': 'reverse',
-    'set': 'set'
-}
+class Lexer:
+    tokens = [
+        "id",
+        "integer"
+    ]
 
-tokens = tokens + list(reserved.values())
+    t_integer = r'[0-9]+'
+    t_id = r'[a-zA-Z][a-zA-Z0-9]*'
 
-t_plus = r'\+'
-t_literal = r'["][a-zA-Z0-9 \W]*["]'  # TODO may not handle /"?
-t_end = r';'
-t_ignore_space = r'[ ]'
+    def __init__(self, **kwargs):
+        self.lexer = lex.lex(module=self, **kwargs)
 
+    def t_error(self, t):
+        raise IllegalCharacter(f"Illegal character {t.value[0]!r} in statement")
 
-def t_constant(t):
-    r'SPACE|TAB|NEWLINE'
-    return t
-
-
-def t_id(t):
-    r'[a-zA-Z][a-zA-Z0-9]*'
-    t.type = reserved.get(t.value, 'id')
-    return t
-
-
-def t_error(t):
-    raise IllegalCharacter(f"Illegal character {t.value[0]!r} in statement")
-
-
-def get_tokens(self):
-    return self.tokens
+    def test(self, data):
+        self.lexer.input(data)
+        while True:
+            tok = self.lexer.token()
+            if not tok:
+                break
+            print(tok)
 
 
 class IllegalCharacter(Exception):
