@@ -13,6 +13,7 @@ Each of the first tokens well then have a do method in an interpreter to simulat
 
 from parser import Parser
 from ply import yacc
+from lexer import Lexer
 
 
 def begin():
@@ -23,9 +24,9 @@ def begin():
         "----------------------------------------- \n"
     )
     parser = Parser()
-
     usr_input = input()
     while True:
+
         parser.parse(usr_input)
         usr_input = input()
 
