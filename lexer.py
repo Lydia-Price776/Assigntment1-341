@@ -24,14 +24,19 @@ class Lexer:
 
     tokens = tokens + list(reserved.values())
 
-    t_literal = r'["][a-zA-Z0-9 \W]*["]'  # TODO may not handle /"?
+    t_literal = r'(["])([^\\]*?(?:\\.[^\\]*?)*)(["])'  # TODO may not handle /"?
     t_plus = r'\+'
     t_end = r';'
     t_ignore_space = r'[ ]'
 
     def t_constant(self, t):
         r'SPACE|TAB|NEWLINE'
-
+        if t.value == 'SPACE':
+            t.value = ' '
+        elif t.value == 'TAB':
+            t.value = '\t'
+        elif t.value == 'NEWLINE':
+            t.value = '\n\r'
         return t
 
     def t_id(self, t):

@@ -85,16 +85,13 @@ class Parser:
     def p_expression(self, p):
         """
         expression : value
-                   | value plus value
-                   | expression plus value
+                   | expression plus expression
 
         """
         if len(p) == 2:  # value
             p[0] = p[1]
-        elif len(p) == 4:  # value PLUS value or expression PLUS value
-            p[0] = p[1] + p[3]
         else:
-            raise ValueError('Invalid expression')
+            p[0] = p[1] + p[3]
 
     def p_value(self, p):
         """
