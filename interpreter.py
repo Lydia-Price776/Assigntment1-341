@@ -19,25 +19,33 @@ class Interpreter:
         else:
             match statement[0]:
                 case 'append':
-                    self.append(statement[1], statement[2])
+                    self.append(statement[1], self.clean_statement(statement[2]))
                 case 'print':
-                    self.print(statement[1])
+                    self.print(self.clean_statement(statement[1]))
                 case 'printlength':
-                    self.printlength(statement[1])
+                    self.printlength(self.clean_statement(statement[1]))
                 case 'printwords':
-                    self.printwords(statement[1])
+                    self.printwords(self.clean_statement(statement[1]))
                 case 'printwordcount':
-                    self.printwordcount(statement[1])
+                    self.printwordcount(self.clean_statement(statement[1]))
                 case 'set':
-                    self.set(statement[1], statement[2])
+                    self.set(statement[1], self.clean_statement(statement[2]))
                 case 'reverse':
-                    self.reverse(statement[1])
+                    self.reverse(self.clean_statement(statement[1]))
 
     def append(self, id_, expression):
+        if self.variables[id_][0] == '"':
+            self.variables[id_] = self.variables[id_][1:-1]
+        if expression[0] == '"':
+            expression = expression[1:-1]
+
         if expression in self.variables:
-            self.variables[id_] = self.variables[id_] + self.variables[expression]
+            if self.variables[expression][0] == '"':
+                self.variables[expression] = self.variables[expression][1:-1]
+
+            self.variables[id_] = '"' + self.variables[id_] + self.variables[expression] + '"'
         else:
-            self.variables[id_] = self.variables[id_] + expression
+            self.variables[id_] = '"' + self.variables[id_] + expression + '"'
 
     def exit(self):
         exit()
@@ -86,11 +94,31 @@ class Interpreter:
         print(f"Word count: {len(words)}")
 
     def clean_statement(self, statement):
-        if '"' not in statement:
-            return
+        expressions = statement.split('+')
+        print(expressions)
+        i = 0
+        while i < len(expressions):
+            if expressions[i][0] == '"':
+                print("first is double quote")
+                expressions[i] = expressions[i].replace('/"', '##')
+                expressions[i] = expressions[i].replace('"', '')
+                expressions[i] = expressions[i].replace('##', '"')
+            else:
+                print("first is not double quote")
+                if expressions[i] == ' ' or expressions[i] == '\t' or expressions[i] == '\n\r':
+                    print("Expression is a constant")
+                else:
+                    expressions[i] = self.variables[expressions[i]]
+                    if expressions[i][0] == '"':
+                        expressions[i] = expressions[i][1:-1]
 
-        # TODO: Need to replace the string with a cleaned string with only " at the beginning and end, and only those with \"
+            i += 1
+        return '"' + ''.join(expressions) + '"'
 
-
-text = input()
-Interpreter().clean_statement(text)
+# # Create a list called expression from splitting the statement by the plus character.
+#
+# Run loop that checks if the first character is a “, otherwise get the valid ID from the dictionary.
+#
+# then, if each expression contains /“ replace this with a placeholder. And remove all other “ characters.
+#
+# Replace the placeholders with “ . Concatenate all expressions and add “ “ around the whole expression to create the new literal.
