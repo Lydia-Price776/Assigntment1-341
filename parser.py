@@ -5,14 +5,14 @@ from lexer import *
 class Parser:
     tokens = Lexer.tokens
 
+    # Constructor
     def __init__(self, lexer):
-        print("Parser constructor called")
         self.parser = yacc.yacc(module=self, tabmodule=None, debug=False, write_tables=False)
         self.lexer = lexer
 
-    # DESTRUCTOR
+    # Destructor
     def __del__(self):
-        print('Parser destructor called.')
+        pass
 
     def p_statement(self, p):
         """
@@ -86,14 +86,15 @@ class Parser:
         """
         expression : value
                    | value plus value
+                   | expression plus value
+
         """
-        if len(p) == 2:
+        if len(p) == 2:  # value
             p[0] = p[1]
+        elif len(p) == 4:  # value PLUS value or expression PLUS value
+            p[0] = p[1] + p[3]
         else:
-            if p[2] == '+':
-                p[0] = p[1] + p[3]
-            else:
-                p[0] = None  # error handling
+            raise ValueError('Invalid expression')
 
     def p_value(self, p):
         """
@@ -104,15 +105,18 @@ class Parser:
         p[0] = p[1]
 
     def p_error(self, p):
-        print("Syntax error at", p.value)
+        if p is None:
+            raise MissingToken("Missing token in statement")
+        else:
+            raise InvalidStatement(f"Invalid token {p.value!r} in statement")
 
     def parse(self, input_string):
         return self.parser.parse(input_string)
 
 
-# Build the parser
-myLex = Lexer()
-myPars = Parser(myLex)
-text = input("Type input: ")
-result = myPars.parse(text)
-print(result)
+class InvalidStatement(Exception):
+    pass
+
+
+class MissingToken(Exception):
+    pass
