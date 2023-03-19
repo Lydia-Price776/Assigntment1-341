@@ -88,7 +88,11 @@ class Parser:
                    | expression plus expression
 
         """
-        if len(p) == 2:  # value
+        # may need to add value + expression?
+        # TODO: handle each case individually? starts with " ends with " ect
+        # will then need to handle ID + value and value + id
+        # otherwise continue with sus function
+        if len(p) == 2:
             p[0] = p[1]
         else:
             if p[1][0] == '"':
