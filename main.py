@@ -1,5 +1,6 @@
 from parser import Parser
 from lexer import Lexer
+from interpreter import Interpreter
 
 
 def begin():
@@ -11,11 +12,12 @@ def begin():
     )
 
     parser = Parser(Lexer())
+    interpreter = Interpreter()
     usr_input = input()
 
     while True:
         result = parser.parse(usr_input)
-        print(result)
+        interpreter.interpret(result)
         usr_input = input()
 
 

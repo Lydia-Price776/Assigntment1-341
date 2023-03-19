@@ -31,6 +31,7 @@ class Lexer:
 
     def t_constant(self, t):
         r'SPACE|TAB|NEWLINE'
+
         return t
 
     def t_id(self, t):

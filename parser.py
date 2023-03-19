@@ -32,7 +32,7 @@ class Parser:
         """
         append_statement : append id expression end
         """
-        p[0] = ('append', p[2], p[3])
+        p[0] = ['append', p[2], p[3]]
 
     def p_list_statement(self, p):
         """
@@ -50,37 +50,37 @@ class Parser:
         """
         print_statement : print expression end
         """
-        p[0] = ('print', p[2])
+        p[0] = ['print', p[2]]
 
     def p_printlength_statement(self, p):
         """
         printlength_statement : printlength expression end
         """
-        p[0] = ('printlength', p[2])
+        p[0] = ['printlength', p[2]]
 
     def p_printwords_statement(self, p):
         """
         printwords_statement : printwords expression end
         """
-        p[0] = ('printwords', p[2])
+        p[0] = ['printwords', p[2]]
 
     def p_printwordcount_statement(self, p):
         """
         printwordcount_statement : printwordcount expression end
         """
-        p[0] = ('printwordcount', p[2])
+        p[0] = ['printwordcount', p[2]]
 
     def p_set_statement(self, p):
         """
         set_statement : set id expression end
         """
-        p[0] = ('set', p[2], p[3])
+        p[0] = ['set', p[2], p[3]]
 
     def p_reverse_statement(self, p):
         """
         reverse_statement : reverse id end
         """
-        p[0] = ('reverse', p[2])
+        p[0] = ['reverse', p[2]]
 
     def p_expression(self, p):
         """
