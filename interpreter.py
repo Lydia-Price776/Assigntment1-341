@@ -1,4 +1,6 @@
 # Remove " before setting to variable
+import re
+
 
 class Interpreter:
 
@@ -66,7 +68,7 @@ class Interpreter:
         if expression in self.variables:
             print("Length: ", len(self.variables[expression]))
         else:
-            print("Length: ",len(self.clean_expression(expression)))
+            print("Length: ", len(self.clean_expression(expression)))
 
     def printwords(self, expression):
         if expression in self.variables:
@@ -75,15 +77,21 @@ class Interpreter:
             words = self.clean_expression(expression).split(' ')
         print("Words:")
         for word in words:
-            print(f"{word}")
+            if re.search('[a-zA-Z]', word) is not None:
+                print(f"{word}")
 
     def printwordcount(self, expression):
         if expression in self.variables:
             words = self.variables[expression].split(' ')
+
         else:
             words = self.clean_expression(expression).split(' ')
+        word_count = 0
+        for word in words:
+            if re.search('[a-zA-Z]', word) is not None:
+                word_count += 1
 
-        print(f"Word count: {len(words)}")
+        print(f"Word count: {word_count}")
 
     def clean_expression(self, statement):
         expressions = statement.split('+')

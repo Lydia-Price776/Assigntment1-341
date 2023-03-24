@@ -13,12 +13,22 @@ def begin():
 
     parser = Parser(Lexer())
     interpreter = Interpreter()
-    usr_input = input()
 
     while True:
-        result = parser.parse(usr_input)
+        lines = []
+        while True:
+            user_input = input()
+
+
+            if user_input == '':
+                break
+            else:
+                lines.append(user_input + '\n')
+
+        complete_input = ''.join(lines)
+
+        result = parser.parse(complete_input)
         interpreter.interpret(result)
-        usr_input = input()
 
 
 if __name__ == '__main__':
