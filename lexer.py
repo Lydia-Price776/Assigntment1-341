@@ -28,6 +28,8 @@ class Lexer:
     t_plus = r'\+'
     t_end = r';'
     t_ignore_space = r'[ ]'
+    t_ignore_newline = r'[\n]'
+
 
     def t_constant(self, t):
         r'SPACE|TAB|NEWLINE'
@@ -36,7 +38,8 @@ class Lexer:
         elif t.value == 'TAB':
             t.value = '\t'
         elif t.value == 'NEWLINE':
-            t.value = '\n\r'
+            t.value = '\n'
+            t.lexer.lineno += len(t.value)
         return t
 
     def t_id(self, t):
@@ -48,15 +51,7 @@ class Lexer:
         self.lexer = lex.lex(module=self, **kwargs)
 
     def t_error(self, t):
-        raise IllegalCharacter(f"Illegal character {t.value[0]!r} in statement")
-
-    def test(self, data):
-        self.lexer.input(data)
-        while True:
-            tok = self.lexer.token()
-            if not tok:
-                break
-            print(tok)
+        raise IllegalCharacter(f"Illegal character {t.value[0]!r} at position {t.lineno}in statement")
 
 
 class IllegalCharacter(Exception):

@@ -1,3 +1,4 @@
+# Remove " before setting to variable
 import re
 
 
@@ -7,9 +8,6 @@ class Interpreter:
         self.variables = {}
 
     def interpret(self, statement):
-        print(f"Interpretting Statement: {statement}")
-        print(type(statement))
-
         if isinstance(statement, str):
             match statement:
                 case 'list':
@@ -33,64 +31,86 @@ class Interpreter:
                 case 'reverse':
                     self.reverse(statement[1])
 
-    def append(self, id_, expression):
+    def append(self, _id, expression):
+        expression = self.clean_expression(expression)
+
         if expression in self.variables:
-            self.variables[id_] = self.variables[id_] + self.variables[expression]
+            self.variables[_id] = self.variables[_id] + self.variables[expression]
         else:
-            self.variables[id_] = self.variables[id_] + expression
+            self.variables[_id] = self.variables[_id] + expression
 
     def exit(self):
         exit()
 
     def list(self):
-        print(f"Identifier list ({len(self.variables)}):\n")
+        print(f"Identifier list ({len(self.variables)}):")
         for key in self.variables:
             print(f"{key}: {self.variables[key]}")
 
     def set(self, id_, expression):
-
+        expression = self.clean_expression(expression)
         self.variables[id_] = expression
-        print()
 
     def reverse(self, id_):
-        words = self.variables[id_].split(' ')
-        self.variables[id_] = ' '.join(reversed(words))
+        if id_ in self.variables:
+            words = self.variables[id_].split(' ')
+            self.variables[id_] = ' '.join(reversed(words))
+        else:
+            raise InterpreterError(f"ID: {id_} has not been defined")
 
     def print(self, expression):
         if expression in self.variables:
             print(self.variables[expression])
         else:
-            print(expression)
+            print(self.clean_expression(expression))
 
     def printlength(self, expression):
         if expression in self.variables:
-            print(len(self.variables[expression]))
+            print("Length: ", len(self.variables[expression]))
         else:
-            print(len(expression))
+            print("Length: ", len(self.clean_expression(expression)))
 
     def printwords(self, expression):
         if expression in self.variables:
             words = self.variables[expression].split(' ')
         else:
-            words = expression.split(' ')
-        print("Words are:\n\r")
+            words = self.clean_expression(expression).split(' ')
+        print("Words:")
         for word in words:
-            print(f"{word}\n\r")
+            if re.search('[a-zA-Z]', word) is not None:
+                print(f"{word}")
 
     def printwordcount(self, expression):
         if expression in self.variables:
             words = self.variables[expression].split(' ')
+
         else:
-            words = expression.split(' ')
+            words = self.clean_expression(expression).split(' ')
+        word_count = 0
+        for word in words:
+            if re.search('[a-zA-Z]', word) is not None:
+                word_count += 1
 
-        print(f"Word count: {len(words)}")
+        print(f"Word count: {word_count}")
 
-    def clean_statement(self, statement):
-        if '"' not in statement:
-            return
+    def clean_expression(self, statement):
+        expressions = statement.split('+')
+        for i, expression in enumerate(expressions):
+            if expression[0] == '"':
+                expression = expression.replace('/"', '##')
+                expression = expression.replace('"', '')
+                expressions[i] = expression.replace('##', '"')
+            elif expression == ' ' or expression == '\t' or expression == '\n':
+                continue
+            else:
+                if expression in self.variables:
+                    expressions[i] = self.variables[expression]
+                else:
+                    raise InterpreterError(f"ID: {expression} has not been defined")
 
-        # TODO: Need to replace the string with a cleaned string with only " at the beginning and end, and only those with \"
+            i += 1
+        return ''.join(expressions)
 
 
-text = input()
-Interpreter().clean_statement(text)
+class InterpreterError(Exception):
+    pass
