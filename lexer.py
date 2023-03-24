@@ -36,7 +36,7 @@ class Lexer:
         elif t.value == 'TAB':
             t.value = '\t'
         elif t.value == 'NEWLINE':
-            t.value = '\n\r'
+            t.value = '\n'
         return t
 
     def t_id(self, t):
@@ -49,14 +49,6 @@ class Lexer:
 
     def t_error(self, t):
         raise IllegalCharacter(f"Illegal character {t.value[0]!r} in statement")
-
-    def test(self, data):
-        self.lexer.input(data)
-        while True:
-            tok = self.lexer.token()
-            if not tok:
-                break
-            print(tok)
 
 
 class IllegalCharacter(Exception):

@@ -1,5 +1,4 @@
-import re
-
+# Remove " before setting to variable
 
 class Interpreter:
 
@@ -7,9 +6,6 @@ class Interpreter:
         self.variables = {}
 
     def interpret(self, statement):
-        print(f"Interpretting Statement: {statement}")
-        print(type(statement))
-
         if isinstance(statement, str):
             match statement:
                 case 'list':
@@ -19,106 +15,94 @@ class Interpreter:
         else:
             match statement[0]:
                 case 'append':
-                    self.append(statement[1], self.clean_statement(statement[2]))
+                    self.append(statement[1], statement[2])
                 case 'print':
-                    self.print(self.clean_statement(statement[1]))
+                    self.print(statement[1])
                 case 'printlength':
-                    self.printlength(self.clean_statement(statement[1]))
+                    self.printlength(statement[1])
                 case 'printwords':
-                    self.printwords(self.clean_statement(statement[1]))
+                    self.printwords(statement[1])
                 case 'printwordcount':
-                    self.printwordcount(self.clean_statement(statement[1]))
+                    self.printwordcount(statement[1])
                 case 'set':
-                    self.set(statement[1], self.clean_statement(statement[2]))
+                    self.set(statement[1], statement[2])
                 case 'reverse':
-                    self.reverse(self.clean_statement(statement[1]))
+                    self.reverse(statement[1])
 
-    def append(self, id_, expression):
-        if self.variables[id_][0] == '"':
-            self.variables[id_] = self.variables[id_][1:-1]
-        if expression[0] == '"':
-            expression = expression[1:-1]
+    def append(self, _id, expression):
+        expression = self.clean_expression(expression)
 
         if expression in self.variables:
-            if self.variables[expression][0] == '"':
-                self.variables[expression] = self.variables[expression][1:-1]
-
-            self.variables[id_] = '"' + self.variables[id_] + self.variables[expression] + '"'
+            self.variables[_id] = self.variables[_id] + self.variables[expression]
         else:
-            self.variables[id_] = '"' + self.variables[id_] + expression + '"'
+            self.variables[_id] = self.variables[_id] + expression
 
     def exit(self):
         exit()
 
     def list(self):
-        print(f"Identifier list ({len(self.variables)}):\n")
+        print(f"Identifier list ({len(self.variables)}):")
         for key in self.variables:
             print(f"{key}: {self.variables[key]}")
 
     def set(self, id_, expression):
-
+        expression = self.clean_expression(expression)
         self.variables[id_] = expression
-        print()
 
     def reverse(self, id_):
-        words = self.variables[id_].split(' ')
-        self.variables[id_] = ' '.join(reversed(words))
+        if id_ in self.variables:
+            words = self.variables[id_].split(' ')
+            self.variables[id_] = ' '.join(reversed(words))
+        else:
+            raise InterpreterError(f"ID: {id_} has not been defined")
 
     def print(self, expression):
         if expression in self.variables:
             print(self.variables[expression])
         else:
-            print(expression)
+            print(self.clean_expression(expression))
 
     def printlength(self, expression):
         if expression in self.variables:
-            print(len(self.variables[expression]))
+            print("Length: ", len(self.variables[expression]))
         else:
-            print(len(expression))
+            print("Length: ",len(self.clean_expression(expression)))
 
     def printwords(self, expression):
         if expression in self.variables:
             words = self.variables[expression].split(' ')
         else:
-            words = expression.split(' ')
-        print("Words are:\n\r")
+            words = self.clean_expression(expression).split(' ')
+        print("Words:")
         for word in words:
-            print(f"{word}\n\r")
+            print(f"{word}")
 
     def printwordcount(self, expression):
         if expression in self.variables:
             words = self.variables[expression].split(' ')
         else:
-            words = expression.split(' ')
+            words = self.clean_expression(expression).split(' ')
 
         print(f"Word count: {len(words)}")
 
-    def clean_statement(self, statement):
+    def clean_expression(self, statement):
         expressions = statement.split('+')
-        print(expressions)
-        i = 0
-        while i < len(expressions):
-            if expressions[i][0] == '"':
-                print("first is double quote")
-                expressions[i] = expressions[i].replace('/"', '##')
-                expressions[i] = expressions[i].replace('"', '')
-                expressions[i] = expressions[i].replace('##', '"')
+        for i, expression in enumerate(expressions):
+            if expression[0] == '"':
+                expression = expression.replace('/"', '##')
+                expression = expression.replace('"', '')
+                expressions[i] = expression.replace('##', '"')
+            elif expression == ' ' or expression == '\t' or expression == '\n':
+                continue
             else:
-                print("first is not double quote")
-                if expressions[i] == ' ' or expressions[i] == '\t' or expressions[i] == '\n\r':
-                    print("Expression is a constant")
+                if expression in self.variables:
+                    expressions[i] = self.variables[expression]
                 else:
-                    expressions[i] = self.variables[expressions[i]]
-                    if expressions[i][0] == '"':
-                        expressions[i] = expressions[i][1:-1]
+                    raise InterpreterError(f"ID: {expression} has not been defined")
 
             i += 1
-        return '"' + ''.join(expressions) + '"'
+        return ''.join(expressions)
 
-# # Create a list called expression from splitting the statement by the plus character.
-#
-# Run loop that checks if the first character is a “, otherwise get the valid ID from the dictionary.
-#
-# then, if each expression contains /“ replace this with a placeholder. And remove all other “ characters.
-#
-# Replace the placeholders with “ . Concatenate all expressions and add “ “ around the whole expression to create the new literal.
+
+class InterpreterError(Exception):
+    pass
