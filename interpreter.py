@@ -1,11 +1,47 @@
 # Remove " before setting to variable
 import re
 
+from lexer import Lexer
+from parser import Parser
+
 
 class Interpreter:
 
     def __init__(self):
         self.variables = {}
+        self.parser = Parser(Lexer())
+
+    def start_program(self):
+        print(
+            "----------------------------------------- \n" +
+            "159.341 2023 Semester 1, Assignment 1\n" +
+            "Submitted by Lydia Price, 20004521\n" +
+            "----------------------------------------- \n"
+        )
+
+        while True:
+            total_input = self.get_user_input()
+            result = self.parser.parse(total_input)
+            self.interpret(result)
+
+    def get_user_input(self):
+        total_input = ""
+        in_literal = False
+        while True:
+            line = input()
+            for i in range(len(line)):
+                if line[i] == '"' and line[i - 1] != "\\":
+                    in_literal = not in_literal
+                elif line[i] == ';' and not in_literal:
+                    total_input += line[:i + 1]
+                    if i < len(line) - 1:
+                        raise InterpreterError(f"Invalid input {line[i + 1:]} entered after statement termination ")
+                    break
+            else:
+                total_input += line + "\n"
+                continue
+            break
+        return total_input
 
     def interpret(self, statement):
         if isinstance(statement, str):
@@ -72,9 +108,9 @@ class Interpreter:
 
     def printwords(self, expression):
         if expression in self.variables:
-            words = self.variables[expression].split(' ')
+            words = re.split(r'\n|\s', self.variables[expression])
         else:
-            words = self.clean_expression(expression).split(' ')
+            words = re.split(r'\n|\s', self.clean_expression(expression))
         print("Words:")
         for word in words:
             if re.search('[a-zA-Z]', word) is not None:
@@ -82,10 +118,11 @@ class Interpreter:
 
     def printwordcount(self, expression):
         if expression in self.variables:
-            words = self.variables[expression].split(' ')
+            words = re.split(r'\n|\s', self.variables[expression])
 
         else:
-            words = self.clean_expression(expression).split(' ')
+
+            words = re.split(r'\n|\s', self.clean_expression(expression))
         word_count = 0
         for word in words:
             if re.search('[a-zA-Z]', word) is not None:
