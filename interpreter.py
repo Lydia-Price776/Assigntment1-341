@@ -19,14 +19,42 @@ class Interpreter:
             "----------------------------------------- \n"
         )
 
-        while True:
-            total_input = self.get_user_input()
+        statements = self.get_user_input()
+        print(statements)
+        """
             result = self.parser.parse(total_input)
             self.interpret(result)
 
+        """
+
     def get_user_input(self):
+
         total_input = ""
         in_literal = False
+        statements = []
+        start_pos = 0
+        #Find out why it is adding the final ; to its own array index ?
+        while True:
+            usr_input = input()
+            for current_pos in range(len(usr_input)):
+                if usr_input[current_pos] == '"' and usr_input[current_pos - 1] != "\\":
+                    in_literal = not in_literal
+                elif usr_input[current_pos] == ';' and not in_literal:
+                    statements.append(usr_input[start_pos:current_pos + 1])
+                    start_pos = current_pos + 1
+
+            if usr_input[len(usr_input)-1] != ';':
+                if len(statements) == 0:
+                    statements.append(usr_input + "\n")
+                else:
+                    last = len(statements) - 1
+                    statements[last] += usr_input + "\n"
+                continue
+            break
+
+        return statements
+
+        """
         while True:
             line = input()
             for i in range(len(line)):
@@ -34,14 +62,14 @@ class Interpreter:
                     in_literal = not in_literal
                 elif line[i] == ';' and not in_literal:
                     total_input += line[:i + 1]
-                    if i < len(line) - 1:
-                        raise InterpreterError(f"Invalid input {line[i + 1:]} entered after statement termination ")
                     break
             else:
                 total_input += line + "\n"
                 continue
             break
         return total_input
+
+    """
 
     def interpret(self, statement):
         if isinstance(statement, str):

@@ -85,13 +85,11 @@ class Parser:
     def p_expression(self, p):
         """
         expression : value
+                   | value plus expression
                    | expression plus expression
 
         """
-        # may need to add value + expression?
-        # TODO: handle each case individually? starts with " ends with " ect
-        # will then need to handle ID + value and value + id
-        # otherwise continue with sus function
+
         if len(p) == 2:
             p[0] = p[1]
         else:
