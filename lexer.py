@@ -24,12 +24,11 @@ class Lexer:
 
     tokens = tokens + list(reserved.values())
 
-    t_literal = r'(["])([^\\]*?(?:\\.[^\\]*?)*)(["])'  # TODO may not handle /"?
+    t_literal = r'(["])([^\\]*?(?:\\.[^\\]*?)*)(["])'
     t_plus = r'\+'
     t_end = r';'
     t_ignore_space = r'[ ]'
     t_ignore_newline = r'[\n]'
-
 
     def t_constant(self, t):
         r'SPACE|TAB|NEWLINE'
@@ -51,8 +50,4 @@ class Lexer:
         self.lexer = lex.lex(module=self, **kwargs)
 
     def t_error(self, t):
-        raise IllegalCharacter(f"Illegal character {t.value[0]!r} at position {t.lineno}in statement")
-
-
-class IllegalCharacter(Exception):
-    pass
+        print(f"Illegal character {t.value[0]} given in Statement ")
