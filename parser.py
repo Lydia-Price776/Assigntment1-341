@@ -107,14 +107,11 @@ class Parser:
         if p is None:
             raise MissingToken("Missing token in statement")
         else:
-            raise InvalidStatement(f"Invalid token {p.value!r} in statement")
+            print(f"Invalid token {p.value!r} in statement")
 
     def parse(self, input_string):
         return self.parser.parse(input_string)
 
-
-class InvalidStatement(Exception):
-    pass
 
 
 class MissingToken(Exception):
