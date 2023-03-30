@@ -2,6 +2,9 @@ from ply import lex
 
 
 class Lexer:
+    def __init__(self, **kwargs):
+        self.lexer = lex.lex(module=self, **kwargs)
+
     tokens = [
         "constant",
         "id",
@@ -29,6 +32,7 @@ class Lexer:
     t_end = r';'
     t_ignore_space = r'[ ]'
     t_ignore_newline = r'[\n]'
+    t_ignore_tab = r'[\t]'
 
     def t_constant(self, t):
         r'SPACE|TAB|NEWLINE'
@@ -46,14 +50,14 @@ class Lexer:
         t.type = self.reserved.get(t.value, 'id')
         return t
 
-    def __init__(self, **kwargs):
-        self.lexer = lex.lex(module=self, **kwargs)
-
     def t_error(self, t):
-        pos = self.find_column(self.lexer.lexdata, t)
+        char_pos = self.find_column(self.lexer.lexdata, t)
         next_space = self.find_next_space(self.lexer.lexdata, t)
-        print("Invalid command or identifier \"" + t.value[0:next_space - pos] + "\"")
-        t.lexer.skip(next_space - pos)
+        if next_space > char_pos:
+            print("Error: Invalid token \"" + t.value[0:next_space - char_pos] + "\" in statement")
+            t.lexer.skip(next_space - char_pos)
+        else:
+            t.lexer.skip(1)
 
     def find_column(self, input, token):
         line_start = input.rfind('\n', 0, token.lexpos) + 1

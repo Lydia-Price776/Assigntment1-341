@@ -105,13 +105,12 @@ class Parser:
 
     def p_error(self, p):
         if p is None:
-            raise MissingToken("Missing token in statement")
+            print("Error: Missing token in statement. Check statement ends with a semicolon ;")
         else:
-            print(f"Invalid token {p.value!r} in statement")
+            print(f"Error: Invalid token {p.value!r} in statement")
 
     def parse(self, input_string):
         return self.parser.parse(input_string)
-
 
 
 class MissingToken(Exception):

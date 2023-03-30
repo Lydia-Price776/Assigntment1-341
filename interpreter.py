@@ -22,7 +22,6 @@ class Interpreter:
 
         while True:
             statements = self.get_user_input()
-
             for statement in statements:
                 result = self.parser.parse(statement)
                 self.interpret(result)
@@ -33,6 +32,8 @@ class Interpreter:
         start_pos = 0
         while True:
             usr_input = input()
+            if len(usr_input) == 0:
+                break
             for current_pos in range(len(usr_input)):
                 if usr_input[current_pos] == '"' and usr_input[current_pos - 1] != "\\":
                     in_literal = not in_literal
@@ -141,36 +142,30 @@ class Interpreter:
     def printwords(self, expression):
         words = []
         if expression in self.variables:
-            words = re.split(r'\n|\s', self.variables[expression])
+            words = re.findall(r"('?\b\S+\b)", self.variables[expression])
         else:
             expression = self.clean_expression(expression)
             if expression == 'ERROR':
                 pass
             else:
-                words = re.split(r'\n|\s', expression)
+                words = re.findall(r"('?\b\S+\b)", expression)
         if len(words) != 0:
             print("Words:")
             for word in words:
-                if re.search('[a-zA-Z]', word) is not None:
-                    print(f"{word}")
+                print(f"{word}")
 
     def printwordcount(self, expression):
         words = []
         if expression in self.variables:
-            words = re.split(r'\n|\s', self.variables[expression])
+            words = re.findall(r"('?\b\S+\b)", self.variables[expression])
         else:
             expression = self.clean_expression(expression)
             if expression == 'ERROR':
                 pass
             else:
-                words = re.split(r'\n|\s', expression)
+                words = re.findall(r"('?\b\S+\b)", expression)
         if len(words) != 0:
-            word_count = 0
-            for word in words:
-                if re.search('[a-zA-Z]', word) is not None:
-                    word_count += 1
-
-            print(f"Word count: {word_count}")
+            print(f"Word count is: {len(words)}")
 
     def clean_expression(self, statement):
         expressions = statement.split('+')
