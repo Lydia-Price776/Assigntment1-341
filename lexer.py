@@ -7,7 +7,7 @@ class Lexer:
         "id",
         "literal",
         "plus",
-        "end"
+        "end",
     ]
 
     reserved = {
@@ -19,7 +19,7 @@ class Lexer:
         'printwords': 'printwords',
         'printwordcount': 'printwordcount',
         'set': 'set',
-        'reverse': 'reverse'
+        'reverse': 'reverse',
     }
 
     tokens = tokens + list(reserved.values())
@@ -50,4 +50,15 @@ class Lexer:
         self.lexer = lex.lex(module=self, **kwargs)
 
     def t_error(self, t):
-        print(f"Illegal character {t.value[0]} given in Statement ")
+        pos = self.find_column(self.lexer.lexdata, t)
+        next_space = self.find_next_space(self.lexer.lexdata, t)
+        print("Invalid command or identifier \"" + t.value[0:next_space - pos] + "\"")
+        t.lexer.skip(next_space - pos)
+
+    def find_column(self, input, token):
+        line_start = input.rfind('\n', 0, token.lexpos) + 1
+        return (token.lexpos - line_start) + 1
+
+    def find_next_space(self, text, token):
+        next_space = text.rfind(' ', token.lexpos) + 1
+        return next_space

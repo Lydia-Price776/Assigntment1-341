@@ -1,5 +1,6 @@
 # Remove " before setting to variable
 import re
+import sys
 
 from lexer import Lexer
 from parser import Parser
@@ -23,15 +24,10 @@ class Interpreter:
             statements = self.get_user_input()
 
             for statement in statements:
-                try:
-                    result = self.parser.parse(statement)
-                    self.interpret(result)
-                except:
-                    pass
+                result = self.parser.parse(statement)
+                self.interpret(result)
 
     def get_user_input(self):
-
-        total_input = ""
         in_literal = False
         statements = []
         start_pos = 0
