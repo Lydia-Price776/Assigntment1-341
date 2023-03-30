@@ -8,7 +8,7 @@ from interpreter import Interpreter
 if __name__ == '__main__':
     print(
         "----------------------------------------- \n" +
-        "159.341 2023 Semester 1, Assignment 1\n" +
+        "159.341 Assignment 1, Semester 1, 2023 \n" +
         "Submitted by Lydia Price, 20004521\n" +
         "----------------------------------------- \n"
     )
